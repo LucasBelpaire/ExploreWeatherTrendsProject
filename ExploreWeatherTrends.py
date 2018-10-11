@@ -57,7 +57,7 @@ def get_moving_average(data, length_of_average):
 temperature_moving_average_brussels = get_moving_average(corrected_data_brussels, 10)
 temperature_moving_average_global = get_moving_average(corrected_data_global, 10)
 
-def plot_graph(data, x_label, y_label, moving):
+def get_temperatures_and_years(data, moving):
 	years = []
 	temperatures = []
 	for data_entry in data:
@@ -66,17 +66,29 @@ def plot_graph(data, x_label, y_label, moving):
 			temperatures.append(data_entry['moving_average_temp'])
 		else:
 			temperatures.append(data_entry['avg_temp'])
+	return [years, temperatures]
 
+def plot_graph(data_set_1, data_set_2, x_label, y_label, moving, label_1, label_2):
+	years_and_temperatures = get_temperatures_and_years(data_set_1, moving)
+	years = years_and_temperatures[0]
+	temperatures = years_and_temperatures[1]
+	years_and_temperatures = get_temperatures_and_years(data_set_2, moving)
+	years_2 = years_and_temperatures[0]
+	temperatures_2 = years_and_temperatures[1]
 	x = years
 	y = temperatures
-	plt.plot(x, y)
+	x2 = years_2
+	y2 = temperatures_2
+	plt.plot(x, y, label=label_1)
+	plt.plot(x2, y2, label=label_2)
 	plt.xlabel(x_label)
 	plt.ylabel(y_label)
 	plt.yticks(np.arange(5, 16, 1.0))
+	plt.legend()
 	plt.show()
 
-plot_graph(temperature_moving_average_global, "Year", "Temperature (C°)", True)
-plot_graph(temperature_moving_average_brussels, "Year", "Temperature (C°)", True)
+plot_graph(temperature_moving_average_global, temperature_moving_average_brussels,"Year", "Temperature (C°)", True, "Global", "Brussels")
+plot_graph(corrected_data_global, corrected_data_brussels,"Year", "Temperature (C°)", False, "Global", "Brussels")
 
 def get_temperatures(data):
 	temperatures = []
@@ -94,12 +106,8 @@ def summarize_data(data):
 	print ('Minimum:', np.min(data))
 	print ('Maximum:', np.max(data))
 
-
 summarize_data(get_temperatures(temperature_moving_average_global))
 summarize_data(get_temperatures(temperature_moving_average_brussels))
-
-plot_graph(corrected_data_global, "Year", "Temperature (C°)", False)
-plot_graph(corrected_data_brussels, "Year", "Temperature (C°)", False)
 
 def correlation_coefficient(data):
 

@@ -102,7 +102,7 @@ temperature_moving_average_global = get_moving_average(corrected_data_global, 10
 \paragraph{}
 After calculating all necessary values the line charts can be constructed. Which is done in the following code.
 \begin{lstlisting}[language=Python]
-def plot_graph(data, x_label, y_label, moving):
+def get_temperatures_and_years(data, moving):
 	years = []
 	temperatures = []
 	for data_entry in data:
@@ -111,17 +111,31 @@ def plot_graph(data, x_label, y_label, moving):
 			temperatures.append(data_entry['moving_average_temp'])
 		else:
 			temperatures.append(data_entry['avg_temp'])
+	return [years, temperatures]
 
+def plot_graph(data_set_1, data_set_2, x_label, y_label, moving, label_1, label_2):
+	years_and_temperatures = get_temperatures_and_years(data_set_1, moving)
+	years = years_and_temperatures[0]
+	temperatures = years_and_temperatures[1]
+	years_and_temperatures = get_temperatures_and_years(data_set_2, moving)
+	years_2 = years_and_temperatures[0]
+	temperatures_2 = years_and_temperatures[1]
 	x = years
 	y = temperatures
-	plt.plot(x, y)
+	x2 = years_2
+	y2 = temperatures_2
+	plt.plot(x, y, label=label_1)
+	plt.plot(x2, y2, label=label_2)
 	plt.xlabel(x_label)
 	plt.ylabel(y_label)
 	plt.yticks(np.arange(5, 16, 1.0))
+	plt.legend()
 	plt.show()
 
-plot_graph(temperature_moving_average_global, "Year", "Temperature (C°)", True)
-plot_graph(temperature_moving_average_brussels, "Year", "Temperature (C°)", True)
+plot_graph(temperature_moving_average_global, temperature_moving_average_brussels,"Year"
+		, "Temperature (C°)", True, "Global", "Brussels")
+plot_graph(corrected_data_global, corrected_data_brussels,"Year", "Temperature (C°)"
+		, False, "Global", "Brussels")
 \end{lstlisting}
 
 \paragraph{Extra}
@@ -185,30 +199,16 @@ The following line charts are produces by the python code.
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[h]{0.8\linewidth}
-\includegraphics[width=\linewidth]{GlobalAverageTemperatureMoving.png}
-\caption{Global Moving Average Temperature (10 years)}
+\begin{subfigure}[h]{1.0\linewidth}
+\includegraphics[width=\linewidth]{MovingAverageTemperature.png}
+\caption{Moving Average Temperature (10 years)}
 \end{subfigure}
-\begin{subfigure}[h]{0.8\linewidth}
-\includegraphics[width=\linewidth]{BrusselsAverageTemperatureMoving.png}
-\caption{Brussels Moving Average Temperature (10 years)}
-\end{subfigure}
-\caption{Moving Average Temperature}
-\label{fig:movingaveragetemp}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}[h]{0.9\linewidth}
-\includegraphics[width=\linewidth]{GlobalAverageTemperature.png}
-\caption{Global Average Temperature}
-\end{subfigure}
-\begin{subfigure}[h]{0.9\linewidth}
-\includegraphics[width=\linewidth]{BrusselsAverageTemperature.png}
-\caption{Brussels Average Temperature}
-\end{subfigure}
+\begin{subfigure}[h]{1.0\linewidth}
+\includegraphics[width=\linewidth]{AverageTemperature.png}
 \caption{Average Temperature}
-\label{fig:averagetemp}
+\end{subfigure}
+\caption{Average Temperature Line Charts}
+\label{fig:Average Temperature Line Chart}
 \end{figure}
 
 \section{Observations}
@@ -241,10 +241,10 @@ The correlation coefficient of the global average graph is 0.62. This means ther
 The correlation coefficient of the Brussels average graph is 0.38. which also means a positive correlation between year and temperature. The coefficient is lower than the coefficient of the global average, which means that the temperature will also rise as the years increase, but less quickly.
 
 \paragraph{}
-When looking at figure 1.a and figure 1.b it is clear that the average temperature is higher in Brussels than globally. This also corresponds with the higher mean temperature in Brussels compared to the global mean temperature.
+When looking at figure 1.a it is clear that the average temperature is higher in Brussels than globally. This also corresponds with the higher mean temperature in Brussels compared to the global mean temperature.
 
 \paragraph{}
-Overall figure 1.a is a lot smoother than figure 1.b. The most probable reason is that the global temperature will not be affected by local outliers, which can be the case in a city like Brussels. 
+In figure 1 Brussels' temperature curve is smoother than the global curve.  The most probable reason is that the global temperature will not be affected by local outliers, which can be the case in a city like Brussels. 
 
 \paragraph{}
 Comparing figure 1 and figure 2 clearly  shows the difference between a moving average and an average. The line charts in figure 2 are a lot less smooth than the ones in figure 1. It is a lot harder to read trends in figure 2 which is why a moving average can be very effective.
