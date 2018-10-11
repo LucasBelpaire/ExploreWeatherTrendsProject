@@ -1,23 +1,25 @@
 # Author: Lucas Belpaire
 # Python code used to process the data for the Weather Trends Project.
 # This is the first project in the Data Analysis Nanodegree of Udacity.
-# The code assumes that the .csv files are in the same directory as the python file.
+# The code assumes that the .csv files are in the same directory
+# as the python file.
 
-import numpy as np 
+import numpy as np
 import unicodecsv
 import matplotlib.pyplot as plt
+
 
 def get_csv(filename):
     with open(filename, 'rb') as file:
         reader = unicodecsv.DictReader(file)
         return list(reader)
 
-#The data from the csv files are stored in variables.
+# The data from the csv files are stored in variables.
 temperature_data_brussels = get_csv('belgiumTrends.csv')
 temperature_data_global = get_csv('globalTrends.csv')
 
-def correct_data_type(data):
 
+def correct_data_type(data):
 	for data_entry in data:
 		try:
 			data_entry['avg_temp'] = float(data_entry['avg_temp'])
@@ -32,7 +34,7 @@ def correct_data_type(data):
 corrected_data_brussels = correct_data_type(temperature_data_brussels)
 corrected_data_global = correct_data_type(temperature_data_global)
 
-#we add a 10 year average for each entry in the table.
+# we add a 10 year average for each entry in the table.
 
 def get_moving_average(data, length_of_average):
 	
@@ -40,7 +42,7 @@ def get_moving_average(data, length_of_average):
 
 	for data_entry in data:
 		temperature = data_entry['avg_temp']
-		#we should check if the temperature is of the correct type, if the type is invalid the data can't be used.
+		# we should check if the temperature is of the correct type, if the type is invalid the data can't be used.
 		try:
 			temperature = float(temperature)
 			last_n_years = np.insert(last_n_years, 0, temperature)[:-1]
@@ -48,7 +50,7 @@ def get_moving_average(data, length_of_average):
 			last_n_years = np.insert(last_n_years, 0, 0)[:-1]
 		except TypeError:
 			last_n_years = np.insert(last_n_years, 0, 0)[:-1]
-		if not 0 in last_n_years: #only if all the last n years actually have a recorded temperature can a correct average be calculated. If there are less than n years, the average is also not calculated
+		if not 0 in last_n_years: # only if all the last n years actually have a recorded temperature can a correct average be calculated. If there are less than n years, the average is also not calculated
 			data_entry['moving_average_temp'] = float(np.average(last_n_years))
 		else:
 			data_entry['moving_average_temp'] = None
@@ -135,10 +137,8 @@ def correlation_coefficient(data):
 
 	return correlation_coef
 
+
+print(np.corrcoef(get_temperatures_and_years(temperature_moving_average_global, False)[0], get_temperatures_and_years(temperature_moving_average_global, False)[1]))
+
 print(correlation_coefficient(temperature_moving_average_global))
 print(correlation_coefficient(temperature_moving_average_brussels))
-
-
-
-
-
