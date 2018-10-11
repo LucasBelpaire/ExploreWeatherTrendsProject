@@ -160,7 +160,7 @@ summarize_data(get_temperatures(temperature_moving_average_global))
 summarize_data(get_temperatures(temperature_moving_average_brussels))
 \end{lstlisting}
 
-To calculate the correlation coefficient the following method will be used.
+To calculate the correlation coefficient the following method will be used. Please note that NumPy has its own function to calculate this called 'corrcoef'. But I have chosen to implement the function to better understand this coefficient. 
 
 \begin{lstlisting}
 def correlation_coefficient(data):
